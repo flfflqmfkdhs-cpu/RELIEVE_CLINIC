@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<!-- og.png 생성용 소스. 브라우저 1200x630 으로 캡처하면 됩니다. 배포물에는 포함되지 않습니다. -->
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      width: 1200px;
+      height: 630px;
+      overflow: hidden;
+    }
+
+    .card {
+      position: relative;
+      width: 1200px;
+      height: 630px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      /* 사이트 배경과 동일한 이미지 + 동일한 보정값 */
+      background: url("../images/bg.png") no-repeat center;
+      background-size: cover;
+      filter: brightness(1.09) contrast(1.05) saturate(0.85);
+      font-family: Pretendard, -apple-system, system-ui, sans-serif;
+    }
+
+    .logo {
+      height: 300px;
+      width: auto;
+      filter: drop-shadow(0 2px 8px rgba(0, 0, 0, .18));
+    }
+
+    .tagline {
+      margin: 44px 0 0;
+      font-size: 30px;
+      font-weight: 500;
+      color: #2b2420;
+      letter-spacing: .02em;
+      text-shadow: 0 1px 6px rgba(255, 255, 255, .6);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <img class="logo" src="../images/relieve_clinic_profile.png" alt="RELIEVE CLINIC" />
+    <p class="tagline">🌿 Your Exclusive Relieve Experience 🌿</p>
+  </div>
+</body>
+
+</html>

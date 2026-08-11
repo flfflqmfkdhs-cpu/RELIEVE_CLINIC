@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<!-- favicon.png / apple-touch-icon.png 생성용 소스. 배포물에는 포함되지 않습니다.
+     로고 이미지에서 상단 R 마크 부분만 잘라내 사용합니다.
+
+       favicon.png          → tools/favicon.html            를 256x256 으로 캡처
+       apple-touch-icon.png → tools/favicon.html?size=180&square 를 180x180 으로 캡처
+
+     ?square 는 모서리를 각지게 만듭니다. iOS 홈 화면 아이콘은 시스템이 알아서 둥글게
+     깎기 때문에, 투명한 둥근 모서리를 넣으면 그 부분이 검게 보입니다. -->
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    * { box-sizing: border-box; }
+
+    html, body { margin: 0; overflow: hidden; }
+
+    /* 탭 배경이 밝든 어둡든 보이도록 크림색 바탕을 깔아줌 */
+    .icon {
+      background: #f5f3ef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .crop {
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 원본 446x352 중 R 마크는 대략 x 152~298, y 5~145 구간이고 가로로는 이미지 중앙에 있음.
+       그 구간이 .crop 을 꽉 채우도록 확대 후 위치를 잡음. (비율은 .icon 크기에 비례) */
+    .crop img {
+      position: absolute;
+      height: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="icon">
+    <div class="crop">
+      <img src="../images/relieve_clinic_profile.png" alt="R" />
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    const size = Number(params.get("size")) || 256;
+    const square = params.has("square");
+
+    // 256px 기준으로 잡아둔 값들을 요청 크기에 맞춰 등비로 확대·축소
+    const k = size / 256;
+
+    const icon = document.querySelector(".icon");
+    icon.style.width = icon.style.height = `${size}px`;
+    icon.style.borderRadius = square ? "0" : `${52 * k}px`;
+
+    const crop = document.querySelector(".crop");
+    crop.style.width = crop.style.height = `${178 * k}px`;
+
+    const img = document.querySelector(".crop img");
+    img.style.width = `${467 * k}px`;
+    img.style.left = `${-147 * k}px`;
+    img.style.top = `${10 * k}px`;
+  </script>
+</body>
+
+</html>
