@@ -602,6 +602,24 @@
     renderProfile();
     renderSections();
   </script>
-</body>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("a, button").forEach(function (element) {
+      const text = element.textContent.trim();
 
+      if (text === "릴리브 클리닉" || text === "RELIEVE CLINIC") {
+        element.addEventListener(
+          "click",
+          function (event) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            window.location.href = "https://www.relieveclinic.co.kr/";
+          },
+          true
+        );
+      }
+    });
+  });
+</script>
+</body>
 </html>
