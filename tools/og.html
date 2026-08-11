@@ -16,6 +16,7 @@
       overflow: hidden;
     }
 
+    /* 사이트 배경과 동일한 웜톤 그라데이션 */
     .card {
       position: relative;
       width: 1200px;
@@ -24,34 +25,54 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      /* 사이트 배경과 동일한 이미지 + 동일한 보정값 */
-      background: url("../images/bg.png") no-repeat center;
-      background-size: cover;
-      filter: brightness(1.09) contrast(1.05) saturate(0.85);
+      background:
+        radial-gradient(110% 70% at 50% -6%, rgba(168, 135, 74, .13), transparent 60%),
+        radial-gradient(80% 45% at 50% 104%, rgba(168, 135, 74, .06), transparent 70%),
+        #faf8f5;
       font-family: Pretendard, -apple-system, system-ui, sans-serif;
     }
 
+    /* 안쪽 골드 테두리 */
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 34px;
+      border: 1px solid rgba(168, 135, 74, .3);
+      pointer-events: none;
+    }
+
+    /* 로고 원본이 검정이라 마스크로 브랜드 초록을 입힘 (index.html 과 동일한 방식) */
     .logo {
-      height: 300px;
-      width: auto;
-      filter: drop-shadow(0 2px 8px rgba(0, 0, 0, .18));
+      height: 230px;
+      aspect-ratio: 446 / 352;
+      background-color: #678b73;
+      -webkit-mask: url("../images/relieve_clinic_profile.png") no-repeat center / contain;
+      mask: url("../images/relieve_clinic_profile.png") no-repeat center / contain;
+    }
+
+    .rule {
+      width: 64px;
+      height: 1px;
+      margin: 42px 0 26px;
+      background: linear-gradient(90deg, transparent, #a8874a, transparent);
     }
 
     .tagline {
-      margin: 44px 0 0;
-      font-size: 30px;
-      font-weight: 500;
-      color: #2b2420;
-      letter-spacing: .02em;
-      text-shadow: 0 1px 6px rgba(255, 255, 255, .6);
+      margin: 0;
+      font-size: 22px;
+      font-weight: 400;
+      color: #8a8579;
+      letter-spacing: .22em;
+      text-transform: uppercase;
     }
   </style>
 </head>
 
 <body>
   <div class="card">
-    <img class="logo" src="../images/relieve_clinic_profile.png" alt="RELIEVE CLINIC" />
-    <p class="tagline">🌿 Your Exclusive Relieve Experience 🌿</p>
+    <div class="logo" role="img" aria-label="RELIEVE CLINIC"></div>
+    <div class="rule"></div>
+    <p class="tagline">Your Exclusive Relieve Experience</p>
   </div>
 </body>
 

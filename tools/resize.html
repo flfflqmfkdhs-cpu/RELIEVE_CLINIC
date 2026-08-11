@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<!-- 이미지 축소용 도구. 배포물에는 포함되지 않습니다.
+
+     ChatGPT 로 만든 원본은 장당 2MB 안팎이라 그대로 쓰기엔 너무 큽니다.
+     이 페이지를 원하는 크기로 캡처하면 그 크기의 파일이 만들어집니다.
+
+     사용법 (로컬 서버를 띄운 상태에서):
+       썸네일 → tools/resize.html?f=/_source/원본.png&w=200&h=200  를 200x200 으로 캡처
+       배경   → tools/resize.html?f=/_source/원본.png&w=480&h=720  를 480x720 으로 캡처
+
+     브라우저 개발자도구의 기기 모드에서 크기를 정확히 맞춘 뒤 "노드 스크린샷"을 쓰면 됩니다.
+     object-fit: cover 라 비율이 다르면 가운데 기준으로 잘립니다. -->
+<meta charset="utf-8">
+<style>
+  html, body { margin: 0; overflow: hidden; background: #faf8f5; }
+  img { display: block; object-fit: cover; }
+</style>
+<img id="i">
+<script>
+  const p = new URLSearchParams(location.search);
+  const el = document.getElementById("i");
+  el.style.width = p.get("w") + "px";
+  el.style.height = p.get("h") + "px";
+  el.src = p.get("f");
+</script>

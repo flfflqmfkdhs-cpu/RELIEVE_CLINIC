@@ -1,9 +1,5 @@
-<!-- 문서 종류를 HTML5로 선언 -->
 <!DOCTYPE html>
-<!-- html 태그 시작, 언어는 영어(기본값) -->
 <html lang="en">
-
-<!-- head 시작 -->
 
 <head>
   <meta charset="UTF-8" />
@@ -24,18 +20,24 @@
   <!-- iOS "홈 화면에 추가" 시 쓰이는 아이콘 -->
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
   <!-- 모바일 브라우저 상단 주소창 색을 페이지 배경과 맞춤 -->
-  <meta name="theme-color" content="#f7e8e8" />
+  <meta name="theme-color" content="#faf8f5" />
   <link rel="stylesheet"
     href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
 
   <style>
     :root {
-      --bg: #f7e8e8;
+      --bg: #faf8f5;
+      /* 브랜드 초록 (로고 원본에서 추출한 값) */
+      --brand: #678b73;
       --card: #ffffff;
-      --title: #1c2340;
-      --sub: #737780;
-      --section: #1c2340;
-      --shadow: 0 1px 3px rgba(0, 0, 0, .08), 0 4px 12px rgba(0, 0, 0, .05);
+      --card-line: rgba(31, 34, 41, .07);
+      /* 포인트 컬러: 밝은 배경에서도 읽히도록 채도를 낮춘 앤티크 골드 */
+      --gold: #a8874a;
+      --gold-line: rgba(168, 135, 74, .26);
+      --text: #1f2229;
+      --text-dim: #8a8579;
+      --shadow: 0 1px 2px rgba(31, 34, 41, .04), 0 6px 16px rgba(31, 34, 41, .05);
+      --shadow-hover: 0 2px 6px rgba(31, 34, 41, .06), 0 14px 32px rgba(31, 34, 41, .10);
     }
 
     * {
@@ -49,7 +51,7 @@
     }
 
     body {
-      /* 마지막 섹션(Others)이 화면 하단에 딱 붙어 보이지 않도록 여유 공간 확보.
+      /* 마지막 섹션이 화면 하단에 딱 붙어 보이지 않도록 여유 공간 확보.
          주의: 여기에 height:100% 를 주면 이 padding 이 그 높이 "안쪽"으로 들어가고
          내용은 밖으로 넘쳐버려서, 값을 아무리 키워도 실제 여백이 생기지 않습니다.
          내용 길이와 무관하게 항상 동작하도록 min-height 를 씁니다. */
@@ -57,17 +59,23 @@
       padding: 0 20px 140px;
       background: var(--bg);
       font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo", sans-serif;
-      color: var(--title);
+      color: var(--text);
       -webkit-font-smoothing: antialiased;
     }
 
+    /* 배경: 수채화 그라데이션 사진 한 장.
+       이미지를 빼고 CSS 그라데이션으로 돌아가려면 background 를 아래로 교체하면 됩니다.
+         background:
+           radial-gradient(85% 48% at 10% 2%, rgba(255,233,203,.85), transparent 62%),
+           radial-gradient(80% 45% at 88% 84%, rgba(219,233,219,.6), transparent 62%),
+           linear-gradient(168deg, #fffdf9, #f4f0e7);
+       사진이 너무 진하면 아래 filter 주석을 풀어 밝기를 올리면 됩니다. */
     .bg-fixed {
       position: fixed;
       inset: 0;
       z-index: -1;
-      background: url("images/bg.png") no-repeat center;
-      filter: brightness(1.09) contrast(1.05) saturate(0.85);
-      background-size: cover;
+      background: url("images/bg.png") no-repeat center / cover, var(--bg);
+      /* filter: brightness(1.05) saturate(.92); */
     }
 
     .wrap {
@@ -78,223 +86,230 @@
     }
 
     .hero-spacer {
-      height: 10dvh;
-      min-height: 5px;
+      height: 9dvh;
+      min-height: 34px;
     }
 
-    /* ── 프로필 영역: 흰 카드 없이, 로고·문구·아이콘이 배경 사진 위에 바로 놓임 ── */
+    /* ── 언어 전환: 화면 오른쪽 위 고정 ── */
+    .lang-fixed {
+      position: fixed;
+      top: 14px;
+      right: 14px;
+      z-index: 20;
+    }
+
+    .lang-toggle {
+      height: 34px;
+      padding: 0 15px;
+      border-radius: 999px;
+      border: 1px solid var(--gold-line);
+      background: rgba(255, 255, 255, .82);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 600;
+      font-family: inherit;
+      letter-spacing: .14em;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: background .18s ease, color .18s ease, border-color .18s ease;
+    }
+
+    .lang-toggle:hover {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #fff;
+    }
+
+    .lang-toggle:focus-visible {
+      outline: 1px solid var(--gold);
+      outline-offset: 3px;
+    }
+
+    /* ── 프로필 영역 ── */
     .profile {
-      position: relative;
-      margin: 0 auto 34px;
-      padding: 0 28px;
-      max-width: 400px;
+      margin: 0 auto 46px;
+      padding: 0 20px;
+      max-width: 420px;
       text-align: center;
     }
 
-    /* 로고: 카드가 없어졌으니 배경 위에 바로 큼직하게 표시 */
     .logo {
-      width: auto;
-      height: 170px;
-      margin: 0 auto 40px;
+      height: 136px;
+      margin: 0 auto 24px;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: visible;
-      /* 밝은 배경 사진 위에서도 로고가 또렷이 보이도록 그림자 추가 */
-      filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .18));
     }
 
-    .logo img {
-      width: auto;
+    /* 로고 원본 파일은 검정입니다. 이미지를 그대로 쓰지 않고 "마스크"로 써서
+       브랜드 초록으로 칠합니다. 색을 바꾸려면 --brand 값만 고치면 됩니다.
+       (로고 파일 자체가 이미 원하는 색이면 background-color 를 지우고
+        .mark 를 <img> 로 되돌려도 됩니다.) */
+    .logo .mark {
       height: 100%;
-      object-fit: contain;
+      aspect-ratio: 446 / 352;
+      background-color: var(--brand);
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+      mask-position: center;
+      -webkit-mask-size: contain;
+      mask-size: contain;
     }
 
     .logo span {
       font-size: 34px;
       font-weight: 800;
-      letter-spacing: -.02em;
-      color: var(--title);
+      letter-spacing: .04em;
+      color: var(--text);
     }
 
-    /* 소개 문구: 배경 사진 위에서도 잘 읽히도록 색과 그림자 조정 */
     .tagline {
-      margin: 0;
-      font-size: 13px;
-      font-weight: 500;
-      color: #2b2420;
-      letter-spacing: .02em;
-      line-height: 1.6;
-      text-shadow: 0 1px 4px rgba(255, 255, 255, .6);
-    }
-
-    /* SNS 아이콘 + 언어 전환 버튼 영역: 카드가 없으니 구분선 대신 여백으로만 분리 */
-    .social {
-      margin-top: 10px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .social a {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      background: #1c2340;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-      transition: transform .15s ease;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, .15);
-    }
-
-    .social a:hover {
-      transform: translateY(-2px);
-    }
-
-    /* 카카오톡: 브랜드 노란색 배경 + 검정 아이콘 */
-    .social a.kakao {
-      background: #FEE500;
-      color: #191919;
-    }
-
-    /* 왓츠앱: 브랜드 초록색 배경 */
-    .social a.whatsapp {
-      background: #25D366;
-      color: #fff;
-    }
-
-    /* 네이버: 브랜드 초록색 배경 */
-    .social a.naver {
-      background: #03C75A;
-      color: #fff;
-    }
-
-    /* ── 언어 전환 버튼 ── */
-    .lang-toggle {
-      height: 34px;
-      padding: 0 14px;
-      border-radius: 999px;
-      border: 1px solid #1c2340;
-      background: #fff;
-      color: #1c2340;
+      margin: 0 0 20px;
       font-size: 12px;
-      font-weight: 700;
-      letter-spacing: .02em;
-      cursor: pointer;
-      transition: background .15s ease, color .15s ease;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, .1);
+      font-weight: 400;
+      color: var(--text-dim);
+      letter-spacing: .1em;
+      line-height: 1.7;
     }
 
-    .lang-toggle:hover {
-      background: #1c2340;
-      color: #fff;
+    /* 로고 아래 얇은 골드 구분선 */
+    .rule {
+      width: 44px;
+      height: 1px;
+      margin: 0 auto;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: .6;
     }
 
+    /* ── 섹션 제목: 양옆에 얇은 선을 두른 소형 라벨 ── */
     .section-title {
-      margin: 58px 0 14px;
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--section);
-      text-align: center;
-      letter-spacing: -.02em;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 44px 0 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: .14em;
+      white-space: nowrap;
+    }
+
+    .section-title::before,
+    .section-title::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--gold-line);
     }
 
     .section-title:first-of-type {
       margin-top: 0;
     }
 
-    /* ── 링크 블록: 기본은 반투명 베이지, 마우스 올리면(hover)/눌렀을 때(active) 흰색으로 ── */
+    /* ── 링크 블록 ── */
     .block {
       position: relative;
       display: flex;
       align-items: center;
-      margin-bottom: 12px;
-      padding: 8px;
-      min-height: 64px;
-      background: rgba(245, 243, 239, 0.75);
-      border-radius: 14px;
+      gap: 14px;
+      margin-bottom: 10px;
+      padding: 10px 12px;
+      min-height: 72px;
+      /* 살짝 비치게 두면 뒤의 그라데이션이 카드에도 은은하게 배어 전체가 따뜻해집니다 */
+      background: rgba(255, 255, 255, .86);
+      border: 1px solid var(--card-line);
+      border-radius: 16px;
       box-shadow: var(--shadow);
       text-decoration: none;
       color: inherit;
-      transition: transform .16s ease, box-shadow .16s ease, background .2s ease;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
     }
 
     .block:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, .1), 0 10px 24px rgba(0, 0, 0, .08);
-      background: var(--card);
+      border-color: var(--gold-line);
+      box-shadow: var(--shadow-hover);
     }
 
     .block:active {
-      transform: scale(.985);
-      background: var(--card);
+      transform: scale(.99);
     }
 
     .block:focus-visible {
-      outline: 2px solid var(--title);
+      outline: 1px solid var(--gold);
       outline-offset: 3px;
     }
 
+    /* url 이 아직 비어 있는 블록: 눌리지 않고 흐리게 표시됨 */
+    .block--pending {
+      opacity: .48;
+      cursor: default;
+    }
+
+    .block--pending:hover {
+      transform: none;
+      border-color: var(--card-line);
+      box-shadow: var(--shadow);
+    }
+
+    /* 원형 썸네일. 사진이 들어가면 사진이, 없으면 라인 아이콘이 표시됨 */
     .thumb {
-      flex: 0 0 48px;
-      width: 48px;
-      height: 48px;
-      border-radius: 8px;
+      flex: 0 0 50px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
       overflow: hidden;
-      background: #d8dae0;
+      border: 1px solid var(--gold-line);
+      background: #f4f1ec;
+      color: var(--gold);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
-      font-weight: 700;
-      color: #fff;
     }
 
     .thumb img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
     }
 
     .label {
       flex: 1;
-      padding: 0 12px;
-      font-size: 19px;
-      font-weight: 600;
+      font-size: 17px;
+      font-weight: 500;
       text-align: center;
-      letter-spacing: -.02em;
+      letter-spacing: -.01em;
       word-break: keep-all;
+      line-height: 1.35;
     }
 
     .share {
-      flex: 0 0 32px;
-      width: 32px;
-      height: 32px;
-      margin-right: 4px;
+      flex: 0 0 30px;
+      width: 30px;
+      height: 30px;
       border: 0;
       padding: 0;
       background: transparent;
       border-radius: 50%;
-      color: #9a9da5;
+      color: #b6b2a8;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background .15s ease;
+      transition: background .18s ease, color .18s ease;
     }
 
     .share:hover {
-      background: #f0f0f2;
-      color: #4b4f58;
+      background: rgba(168, 135, 74, .1);
+      color: var(--gold);
     }
 
     .share:focus-visible {
-      outline: 2px solid var(--title);
+      outline: 1px solid var(--gold);
       outline-offset: 2px;
     }
 
@@ -303,16 +318,18 @@
       left: 50%;
       bottom: 32px;
       transform: translate(-50%, 16px);
-      padding: 11px 20px;
-      background: #1c2340;
+      padding: 12px 22px;
+      background: var(--text);
       color: #fff;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
+      letter-spacing: .02em;
       border-radius: 999px;
+      box-shadow: 0 10px 30px rgba(31, 34, 41, .22);
       opacity: 0;
       pointer-events: none;
-      transition: opacity .2s ease, transform .2s ease;
-      z-index: 10;
+      transition: opacity .22s ease, transform .22s ease;
+      z-index: 30;
     }
 
     .toast.on {
@@ -332,45 +349,17 @@
 
   <div class="bg-fixed"></div>
 
+  <div class="lang-fixed">
+    <button class="lang-toggle" id="langToggle" type="button">KOR</button>
+  </div>
+
   <main class="wrap">
     <div class="hero-spacer"></div>
 
     <div class="profile">
       <div class="logo" id="logo"></div>
       <p class="tagline" id="tagline"></p>
-      <div class="social">
-        <!-- 인스타그램 -->
-        <a href="https://www.instagram.com/relieve_clinic_/" target="_blank" rel="noopener" aria-label="Instagram">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="2" y="2" width="20" height="20" rx="5" />
-            <circle cx="12" cy="12" r="4.2" />
-            <circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none" />
-          </svg>
-        </a>
-        <!-- 카카오톡 채널 바로가기 -->
-        <a class="kakao" href="https://pf.kakao.com/_EUxjMn" target="_blank" rel="noopener" aria-label="KakaoTalk">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path
-              d="M12 3C6.48 3 2 6.58 2 11c0 2.86 1.9 5.37 4.75 6.8-.2.75-.73 2.72-.84 3.15-.13.53.2.53.42.38.17-.12 2.68-1.82 3.77-2.56.62.09 1.26.13 1.9.13 5.52 0 10-3.58 10-8s-4.48-8-10-8z" />
-          </svg>
-        </a>
-        <!-- 왓츠앱 바로가기 -->
-        <a class="whatsapp" href="https://api.whatsapp.com/message/RT4JNG7U3XNIP1?autoload=1&amp;app_absent=0"
-          target="_blank" rel="noopener" aria-label="WhatsApp">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path
-              d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.87 9.87 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.46 17.5 2 12.04 2zm5.8 14.02c-.24.68-1.4 1.3-1.93 1.38-.5.08-1.13.11-1.82-.11-.42-.13-.96-.31-1.65-.6-2.9-1.25-4.79-4.17-4.94-4.36-.14-.2-1.18-1.57-1.18-3 0-1.42.75-2.12 1.02-2.41.26-.28.58-.36.77-.36.19 0 .39 0 .55.01.18.01.42-.07.65.5.24.58.82 2 .89 2.15.07.14.12.31.02.5-.1.19-.15.31-.3.48-.14.17-.31.37-.44.5-.15.14-.3.3-.13.6.17.29.75 1.24 1.62 2.01 1.11 1 2.05 1.31 2.34 1.46.29.15.46.13.63-.07.17-.2.72-.84.91-1.13.19-.29.38-.24.63-.14.26.1 1.65.78 1.93.92.29.14.48.21.55.33.07.12.07.68-.17 1.36z" />
-          </svg>
-        </a>
-        <!-- 네이버 예약 바로가기 -->
-        <a class="naver" href="https://booking.naver.com/booking/13/bizes/1302224" target="_blank" rel="noopener"
-          aria-label="Naver">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M16.3 2v10.5L7.8 2H2v20h6V9.5l8.5 12.5H24V2z" />
-          </svg>
-        </a>
-        <button class="lang-toggle" id="langToggle" type="button">KOR</button>
-      </div>
+      <div class="rule"></div>
     </div>
 
     <div id="sections"></div>
@@ -379,11 +368,22 @@
   <div class="toast" id="toast">Link copied</div>
 
   <script>
+    /* ─────────────────────────────────────────────────────────────
+       여기만 고치면 됩니다. 위 CSS 와 아래 렌더링 로직은 건드릴 필요 없음.
+       ───────────────────────────────────────────────────────────── */
+
+    /* 썸네일에 사진을 쓸지 여부.
+       false → 라인 아이콘(SVG)로 표시. 이미지 파일이 없어도 정상 동작합니다.
+       true  → 각 블록의 thumb 경로에 있는 사진을 씁니다.
+       사진을 images/ 에 모두 넣은 뒤 이 값만 true 로 바꾸세요.
+       (파일이 하나 빠져 있어도 그 칸만 자동으로 라인 아이콘으로 대체됩니다.) */
+    const USE_PHOTOS = true;
+
     const SITE_KO = {
       logo: "images/relieve_clinic_profile.png",
       logoText: "R",
       name: "RELIEVE CLINIC",
-      tagline: "🌿 Your Exclusive Relieve Experience 🌿",
+      tagline: "Your Exclusive Relieve Experience",
       toastCopied: "링크를 복사했습니다",
       toastFailed: "복사할 수 없습니다. 주소창에서 직접 복사해 주세요",
 
@@ -391,34 +391,33 @@
         {
           title: "ABOUT 릴리브 클리닉",
           blocks: [
-            { label: "릴리브 클리닉", url: "https://app.notion.com/p/3a5a23965f2080ee949bd55eef1eb751", thumb: "images/icon1_leaf_circle.png" },
-            { label: "사후관리", url: "https://app.notion.com/p/3a5a23965f2080ee949bd55eef1eb751", thumb: "images/icon2_door_circle.png" },
-            { label: "이달의 프로모션", url: "https://app.notion.com/p/3a5a23965f2080ee949bd55eef1eb751", thumb: "images/icon3_road_circle.png" }
+            { label: "릴리브 클리닉", url: "https://app.notion.com/p/3a5a23965f2080ee949bd55eef1eb751", icon: "leaf", thumb: "images/thumb-clinic.png" },
+            { label: "사후관리", url: "https://app.notion.com/p/3a5a23965f2080ee949bd55eef1eb751", icon: "heart", thumb: "images/thumb-aftercare.png" },
+            { label: "이달의 프로모션", url: "https://app.notion.com/p/3a5a23965f2080ee949bd55eef1eb751", icon: "tag", thumb: "images/thumb-promotion.png" }
           ]
         },
         {
           title: "이달의 릴리브픽",
           blocks: [
-            { label: "이달의 릴리브픽", url: "https://app.notion.com/p/3a5a23965f2080ee949bd55eef1eb751", thumb: "images/icon4_monogram_circle.png" }
+            { label: "이달의 릴리브픽", url: "https://app.notion.com/p/3a5a23965f2080ee949bd55eef1eb751", icon: "star", thumb: "images/thumb-pick.png" }
           ]
         },
         {
-          /* [수정] 컨시어지 섹션: 3블록 → 5블록으로 확장, 각 실제 노션 링크 연결
-             (필요시 thumb 이미지 경로만 원하는 아이콘 파일명으로 교체하면 됨) */
           title: "컨시어지",
           blocks: [
-            { label: "맛집", url: "https://app.notion.com/p/Recommended-Restaurants-3ada23965f2080ba957bcec6b13289a8", thumb: "images/icon1_leaf_circle.png" },
-            { label: "여행", url: "https://app.notion.com/p/Travel-Concierge-3ada23965f20803887bdc7e943e83de4", thumb: "images/icon3_road_circle.png" },
-            { label: "쇼핑", url: "https://app.notion.com/p/Shopping-Concierge-3b2a23965f2080cd9d03d9679f8bf164?source=copy_link", thumb: "images/icon2_door_circle.png" },
-            { label: "웰니스", url: "https://app.notion.com/p/Stay-Care-Concierge-3b2a23965f2080f980ffe1a350986b67", thumb: "images/icon4_monogram_circle.png" },
-            { label: "여행 필수품", url: "https://app.notion.com/p/Travel-Essentials-3b2a23965f2080759b1ccff65b2f764c", thumb: "images/icon1_leaf_circle.png" }
+            { label: "맛집", url: "https://app.notion.com/p/Recommended-Restaurants-3ada23965f2080ba957bcec6b13289a8", icon: "utensils", thumb: "images/thumb-food.png" },
+            { label: "여행", url: "https://app.notion.com/p/Travel-Concierge-3ada23965f20803887bdc7e943e83de4", icon: "plane", thumb: "images/thumb-travel.png" },
+            { label: "쇼핑", url: "https://app.notion.com/p/Shopping-Concierge-3b2a23965f2080cd9d03d9679f8bf164?source=copy_link", icon: "bag", thumb: "images/thumb-shopping.png" },
+            /* [TODO] 아래 두 칸은 url 을 채우면 바로 활성화됩니다 (지금은 흐리게 표시, 클릭 불가) */
+            { label: "호스피탈리티", url: "", icon: "bed", thumb: "images/thumb-hospitality.png" },
+            { label: "뷰티", url: "", icon: "bottle", thumb: "images/thumb-beauty.png" },
+            { label: "여행 필수품", url: "https://app.notion.com/p/Travel-Essentials-3b2a23965f2080759b1ccff65b2f764c", icon: "case", thumb: "images/thumb-essentials.png" }
           ]
         },
-        /* [삭제] "추천코스" 섹션(Relieve Pick 블록) 제거 요청으로 통째로 삭제됨 */
         {
-          title: "기타",
+          title: "I need your feedback. 😊",
           blocks: [
-            { label: "건의사항 및 만족도", url: "https://app.notion.com/p/3a5a23965f2080ee949bd55eef1eb751", thumb: "images/icon2_door_circle.png" }
+            { label: "건의사항 및 만족도", url: "https://app.notion.com/p/3a5a23965f2080ee949bd55eef1eb751", icon: "chat", thumb: "images/thumb-feedback.png" }
           ]
         }
       ]
@@ -428,7 +427,7 @@
       logo: "images/relieve_clinic_profile.png",
       logoText: "R",
       name: "RELIEVE CLINIC",
-      tagline: "💫 Your Exclusive Relieve Experience 💫",
+      tagline: "Your Exclusive Relieve Experience",
       toastCopied: "Link copied",
       toastFailed: "Couldn't copy. Please copy the link from the address bar",
 
@@ -436,38 +435,63 @@
         {
           title: "ABOUT RELIEVE CLINIC",
           blocks: [
-            { label: "Relieve Clinic", url: "https://app.notion.com/p/3a5a23965f2080ee949bd55eef1eb751", thumb: "images/icon1_leaf_circle.png" },
-            { label: "Aftercare", url: "https://app.notion.com/p/3a5a23965f2080ee949bd55eef1eb751", thumb: "images/icon2_door_circle.png" },
-            { label: "This Month's Promotion", url: "https://app.notion.com/p/3a5a23965f2080ee949bd55eef1eb751", thumb: "images/icon3_road_circle.png" }
+            { label: "Relieve Clinic", url: "https://app.notion.com/p/3a5a23965f2080ee949bd55eef1eb751", icon: "leaf", thumb: "images/thumb-clinic.png" },
+            { label: "Aftercare", url: "https://app.notion.com/p/3a5a23965f2080ee949bd55eef1eb751", icon: "heart", thumb: "images/thumb-aftercare.png" },
+            { label: "This Month's Promotion", url: "https://app.notion.com/p/3a5a23965f2080ee949bd55eef1eb751", icon: "tag", thumb: "images/thumb-promotion.png" }
           ]
         },
         {
           title: "This Month's Pick",
           blocks: [
-            { label: "This Month's Pick", url: "https://app.notion.com/p/Monthly-Picks-3b2a23965f20807887e2ff8580851271", thumb: "images/icon4_monogram_circle.png" }
+            { label: "This Month's Pick", url: "https://app.notion.com/p/Monthly-Picks-3b2a23965f20807887e2ff8580851271", icon: "star", thumb: "images/thumb-pick.png" }
           ]
         },
         {
-          /* [수정] Concierge 섹션: 3블록 → 5블록으로 확장, 각 실제 노션 링크 연결
-             (필요시 thumb 이미지 경로만 원하는 아이콘 파일명으로 교체하면 됨) */
           title: "Concierge",
           blocks: [
-            { label: "Food", url: "https://app.notion.com/p/Recommended-Restaurants-3ada23965f2080ba957bcec6b13289a8", thumb: "images/icon1_leaf_circle.png" },
-            { label: "Travel", url: "https://app.notion.com/p/Travel-Concierge-3ada23965f20803887bdc7e943e83de4", thumb: "images/icon3_road_circle.png" },
-            { label: "Shopping", url: "https://app.notion.com/p/Shopping-Concierge-3b2a23965f2080cd9d03d9679f8bf164?source=copy_link", thumb: "images/icon2_door_circle.png" },
-            { label: "Stay&Care", url: "https://app.notion.com/p/Stay-Care-Concierge-3b2a23965f2080f980ffe1a350986b67", thumb: "images/icon4_monogram_circle.png" },
-            { label: "Travel essentials", url: "https://app.notion.com/p/Travel-Essentials-3b2a23965f2080759b1ccff65b2f764c", thumb: "images/icon1_leaf_circle.png" }
+            { label: "Food", url: "https://app.notion.com/p/Recommended-Restaurants-3ada23965f2080ba957bcec6b13289a8", icon: "utensils", thumb: "images/thumb-food.png" },
+            { label: "Travel", url: "https://app.notion.com/p/Travel-Concierge-3ada23965f20803887bdc7e943e83de4", icon: "plane", thumb: "images/thumb-travel.png" },
+            { label: "Shopping", url: "https://app.notion.com/p/Shopping-Concierge-3b2a23965f2080cd9d03d9679f8bf164?source=copy_link", icon: "bag", thumb: "images/thumb-shopping.png" },
+            /* [TODO] 아래 두 칸은 url 을 채우면 바로 활성화됩니다 (지금은 흐리게 표시, 클릭 불가) */
+            { label: "Hospitality", url: "", icon: "bed", thumb: "images/thumb-hospitality.png" },
+            { label: "Beauty", url: "", icon: "bottle", thumb: "images/thumb-beauty.png" },
+            { label: "Travel Essentials", url: "https://app.notion.com/p/Travel-Essentials-3b2a23965f2080759b1ccff65b2f764c", icon: "case", thumb: "images/thumb-essentials.png" }
           ]
         },
-        /* [삭제] "Recommended Course" 섹션(Relieve Pick 블록) 제거 요청으로 통째로 삭제됨 */
         {
-          title: "Others",
+          title: "I need your feedback. 😊",
           blocks: [
-            { label: "Feedback & Satisfaction", url: "https://app.notion.com/p/3a5a23965f2080ee949bd55eef1eb751", thumb: "images/icon2_door_circle.png" }
+            { label: "Feedback & Satisfaction", url: "https://app.notion.com/p/3a5a23965f2080ee949bd55eef1eb751", icon: "chat", thumb: "images/thumb-feedback.png" }
           ]
         }
       ]
     };
+
+    /* ───────────────────── 아래부터는 렌더링 로직 ─────────────────────
+       ICONS: 사진이 없을 때 쓰이는 라인 아이콘. 모두 24x24 기준, 색은 CSS 를 따라감. */
+
+    const ICONS = {
+      leaf: `<path d="M4 20c0-8 5.5-14.5 16-16 0 11-6.5 16-16 16z" /><path d="M4.5 19.5c2.5-5 5.5-8.5 9.5-11" />`,
+      heart: `<path d="M12 20.5S4.5 16 4.5 10.6A4.1 4.1 0 0 1 12 8.2a4.1 4.1 0 0 1 7.5 2.4C19.5 16 12 20.5 12 20.5z" />`,
+      tag: `<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0l-7.2-7.2A2 2 0 0 1 2.8 12V4.8a2 2 0 0 1 2-2H12a2 2 0 0 1 1.4.6l7.2 7.2a2 2 0 0 1 0 2.8z" /><circle cx="7.6" cy="7.6" r="1.3" />`,
+      star: `<path d="M12 3.2l2.3 6.1 6.1 2.3-6.1 2.3L12 20l-2.3-6.1L3.6 11.6l6.1-2.3z" />`,
+      utensils: `<path d="M4 3v6a2.5 2.5 0 0 0 5 0V3" /><path d="M6.5 11.5V21" /><path d="M19.5 3a4.5 4.5 0 0 0-3.5 4.4V13h3.5" /><path d="M19.5 13v8" />`,
+      plane: `<path d="M21 3 3.4 10.4l7 3.2 3.2 7z" /><path d="M21 3 10.4 13.6" />`,
+      bag: `<path d="M6.2 2.5 3.5 6.4V19a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2V6.4l-2.7-3.9z" /><path d="M3.5 6.4h17" /><path d="M15.5 10a3.5 3.5 0 0 1-7 0" />`,
+      drop: `<path d="M12 3.2c3 4.4 6 7.4 6 10.9a6 6 0 0 1-12 0c0-3.5 3-6.5 6-10.9z" />`,
+      bed: `<path d="M2.6 19.4v-5.6a2 2 0 0 1 2-2h14.8a2 2 0 0 1 2 2v5.6" /><path d="M2.6 16.8h18.8" /><path d="M6.2 11.8V9.2a1.6 1.6 0 0 1 1.6-1.6h8.4a1.6 1.6 0 0 1 1.6 1.6v2.6" /><path d="M2.6 19.4v1.4" /><path d="M21.4 19.4v1.4" />`,
+      bottle: `<path d="M9.6 3.4h4.8" /><path d="M10.6 3.4v3l-2 2.7a3 3 0 0 0-.6 1.8V19a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-8.1a3 3 0 0 0-.6-1.8l-2-2.7v-3" /><path d="M8 14.2h8" />`,
+      case: `<rect x="2.8" y="7.2" width="18.4" height="13.6" rx="2.4" /><path d="M8.4 7.2V5.4a2 2 0 0 1 2-2h3.2a2 2 0 0 1 2 2v1.8" /><path d="M2.8 12.4h18.4" />`,
+      chat: `<path d="M20.5 15.2a2 2 0 0 1-2 2H8.2L4 20.4V5.4a2 2 0 0 1 2-2h12.5a2 2 0 0 1 2 2z" />`
+    };
+
+    // 라인 아이콘 공통 껍데기 (선 굵기·모서리 처리를 한 곳에서 관리)
+    function lineIcon(name) {
+      const body = ICONS[name];
+      if (!body) return "";
+      return `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
+    }
 
     let currentLang = "en";
 
@@ -479,23 +503,36 @@
       const site = getSite();
       const logo = document.getElementById("logo");
       logo.innerHTML = site.logo
-        ? `<img src="${site.logo}" alt="${site.name} logo" />`
+        ? `<span class="mark" role="img" aria-label="${site.name}"
+             style="-webkit-mask-image:url('${site.logo}');mask-image:url('${site.logo}')"></span>`
         : `<span>${site.logoText}</span>`;
       document.getElementById("tagline").textContent = site.tagline;
     }
 
     function renderBlock(block) {
-      const thumb = block.thumb
-        ? `<img src="${block.thumb}" alt="" />`
-        : `<span></span>`;
+      const thumb = USE_PHOTOS && block.thumb
+        ? `<img src="${block.thumb}" alt="" data-fallback="${block.icon || ""}" />`
+        : lineIcon(block.icon);
+
+      const inner = `
+      <span class="thumb">${thumb}</span>
+      <span class="label">${block.label}</span>`;
+
+      // url 이 비어 있으면 링크가 아닌 흐린 박스로 렌더링 (빈 링크로 새 탭이 열리는 것을 방지)
+      if (!block.url) {
+        return `
+    <div class="block block--pending" aria-disabled="true">
+      ${inner}
+      <span class="share" aria-hidden="true"></span>
+    </div>`;
+      }
 
       return `
     <a class="block" href="${block.url}" target="_blank" rel="noopener">
-      <span class="thumb">${thumb}</span>
-      <span class="label">${block.label}</span>
+      ${inner}
       <button class="share" type="button" data-url="${block.url}" aria-label="${block.label}">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <circle cx="12" cy="5" r="1.8" /><circle cx="12" cy="12" r="1.8" /><circle cx="12" cy="19" r="1.8" />
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <circle cx="12" cy="5" r="1.7" /><circle cx="12" cy="12" r="1.7" /><circle cx="12" cy="19" r="1.7" />
         </svg>
       </button>
     </a>`;
@@ -507,6 +544,13 @@
     <h2 class="section-title">${section.title}</h2>
     ${section.blocks.map(renderBlock).join("")}
   `).join("");
+
+      // 사진 파일이 없거나 깨진 칸은 라인 아이콘으로 되돌림
+      document.querySelectorAll(".thumb img[data-fallback]").forEach(img => {
+        img.addEventListener("error", () => {
+          img.parentElement.innerHTML = lineIcon(img.dataset.fallback);
+        });
+      });
     }
 
     let toastTimer;
@@ -528,6 +572,7 @@
 
     document.getElementById("langToggle").addEventListener("click", toggleLang);
 
+    // 블록 오른쪽 ⋮ 버튼 → 공유(모바일) 또는 링크 복사(데스크톱)
     document.addEventListener("click", async event => {
       const button = event.target.closest(".share");
       if (!button) return;
@@ -537,7 +582,7 @@
       const site = getSite();
 
       if (navigator.share) {
-        try { await navigator.share({ url }); return; } catch { /* cancelled → fall through to copy */ }
+        try { await navigator.share({ url }); return; } catch { /* 취소 시 복사로 넘어감 */ }
       }
       try {
         await navigator.clipboard.writeText(url);

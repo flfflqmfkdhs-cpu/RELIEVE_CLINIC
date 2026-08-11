@@ -1,20 +1,34 @@
 # RELIEVE_R — RELIEVE CLINIC 링크 페이지
 
-`relieve-link.vercel.app` 과 동일한 원페이지 링크 사이트입니다.
-빌드 도구 없이 **HTML 파일 하나 + 이미지 폴더**로 동작합니다.
+원페이지 링크 사이트입니다. 빌드 도구나 프레임워크 없이 **HTML 파일 하나**로 동작합니다.
 
 ```
-index.html          페이지 전체 (CSS·JS 인라인)
+index.html          페이지 전체 (CSS·JS·아이콘 전부 인라인)
 build.mjs           배포 주소를 OG 태그에 자동 주입 → dist/ 생성
 package.json        npm run build / npm run dev
 images/
-  bg.png                        고정 배경 사진
-  relieve_clinic_profile.png    상단 로고
-  icon1_leaf_circle.png         블록 썸네일 (잎)
-  icon2_door_circle.png         블록 썸네일 (문)
-  icon3_road_circle.png         블록 썸네일 (길)
-  icon4_monogram_circle.png     블록 썸네일 (모노그램 R)
+  relieve_clinic_profile.png    상단 로고 (유일한 이미지 파일)
 ```
+
+## 디자인
+
+다크 럭셔리 — 딥 차콜 바탕에 샴페인 골드 포인트.
+
+| 토큰 | 값 | 쓰임 |
+| --- | --- | --- |
+| `--bg` | `#14161a` | 페이지 바탕 |
+| `--surface` | `rgba(30,33,38,.72)` | 링크 블록 |
+| `--gold` | `#c9a961` | 아이콘·섹션 제목·테두리 |
+| `--text` | `#f0ece4` | 본문 (아이보리) |
+| `--text-dim` | `#8b8b86` | 보조 문구 |
+
+`<style>` 최상단 `:root` 에서 이 다섯 개만 바꾸면 전체 톤이 한 번에 바뀝니다.
+
+**배경은 이미지가 아니라 CSS 그라데이션**입니다(`.bg-fixed`). 위쪽에서 떨어지는 골드 글로우와
+아래쪽 반사광 두 겹으로 구성돼 있어서, 배경 사진 파일이 필요 없고 어떤 화면 비율에서도 안 깨집니다.
+
+로고 원본이 검정이라 어두운 배경에서 안 보이므로 CSS `filter` 로 아이보리로 반전시켜 씁니다.
+로고 파일 자체를 밝은 버전으로 교체하면 `.logo img` 의 `filter` 줄을 지우면 됩니다.
 
 ## 실행
 
@@ -67,8 +81,8 @@ Environment Variables 에 `SITE_URL = https://link.example.com` 을 추가하세
 
 | 파일 | 크기 | 용도 |
 | --- | --- | --- |
-| `og.png` | 1200×630 | 카카오톡·SNS 공유 미리보기 |
-| `favicon.png` | 256×256 | 브라우저 탭 아이콘 |
+| `og.png` | 1200×630 | 카카오톡·SNS 공유 미리보기 (다크 + 골드 테두리) |
+| `favicon.png` | 256×256 | 브라우저 탭 아이콘 (다크 바탕 + 아이보리 R) |
 | `apple-touch-icon.png` | 180×180 | iOS "홈 화면에 추가" 아이콘 |
 
 `build.mjs` 가 `dist/` 로 자동 복사합니다.
@@ -105,12 +119,39 @@ Environment Variables 에 `SITE_URL = https://link.example.com` 을 추가하세
 {
   title: "새 섹션 이름",
   blocks: [
-    { label: "버튼 이름", url: "https://...", thumb: "images/icon1_leaf_circle.png" }
+    { label: "버튼 이름", url: "https://...", icon: "leaf" }
   ]
 }
 ```
 
-`thumb` 을 생략하면 회색 사각형이 표시됩니다.
+### 아이콘
+
+블록 왼쪽 아이콘은 이미지 파일이 아니라 **HTML 안에 인라인된 SVG** 입니다. 색이 CSS 를 따라가고
+이미지 요청이 발생하지 않습니다. `icon` 값에는 아래 이름 중 하나를 씁니다.
+
+| 이름 | 모양 | 이름 | 모양 |
+| --- | --- | --- | --- |
+| `leaf` | 잎 | `plane` | 종이비행기 |
+| `heart` | 하트 | `bag` | 쇼핑백 |
+| `tag` | 가격표 | `drop` | 물방울 |
+| `star` | 4각 별 | `case` | 여행가방 |
+| `utensils` | 포크·나이프 | `chat` | 말풍선 |
+| `bed` | 침대 | `bottle` | 화장품 병 |
+
+새 아이콘은 `<script>` 의 `ICONS` 목록에 `이름: \`<path d="..." />\`` 한 줄을 추가하면 됩니다.
+24×24 기준으로 그리면 되고, 선 굵기·색·모서리 처리는 `lineIcon()` 이 공통으로 씌워줍니다.
+
+`icon` 을 생략하거나 목록에 없는 이름을 쓰면 빈 원만 표시됩니다.
+
+### 아직 링크가 없는 블록
+
+`url` 을 빈 문자열(`""`)로 두면 클릭되지 않는 흐린 박스로 표시됩니다. 링크를 나중에 받기로 한
+항목을 미리 자리만 잡아둘 때 씁니다. 주소를 채워 넣으면 자동으로 일반 블록이 됩니다.
+
+```js
+{ label: "Hospitality", url: "", icon: "bed" }      // 흐림 · 클릭 불가
+{ label: "Hospitality", url: "https://...", icon: "bed" }   // 정상 동작
+```
 
 ### 시작 언어 바꾸기
 

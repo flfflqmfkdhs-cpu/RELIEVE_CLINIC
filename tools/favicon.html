@@ -16,9 +16,9 @@
 
     html, body { margin: 0; overflow: hidden; }
 
-    /* 탭 배경이 밝든 어둡든 보이도록 크림색 바탕을 깔아줌 */
+    /* 사이트와 동일한 아이보리 바탕 + 원본 검정 마크 */
     .icon {
-      background: #f5f3ef;
+      background: #faf8f5;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -32,9 +32,11 @@
 
     /* 원본 446x352 중 R 마크는 대략 x 152~298, y 5~145 구간이고 가로로는 이미지 중앙에 있음.
        그 구간이 .crop 을 꽉 채우도록 확대 후 위치를 잡음. (비율은 .icon 크기에 비례) */
-    .crop img {
+    .crop .mark {
       position: absolute;
-      height: auto;
+      background-color: #678b73;
+      -webkit-mask: url("../images/relieve_clinic_profile.png") no-repeat center / 100% 100%;
+      mask: url("../images/relieve_clinic_profile.png") no-repeat center / 100% 100%;
     }
   </style>
 </head>
@@ -42,7 +44,7 @@
 <body>
   <div class="icon">
     <div class="crop">
-      <img src="../images/relieve_clinic_profile.png" alt="R" />
+      <i class="mark" role="img" aria-label="R"></i>
     </div>
   </div>
 
@@ -61,8 +63,9 @@
     const crop = document.querySelector(".crop");
     crop.style.width = crop.style.height = `${178 * k}px`;
 
-    const img = document.querySelector(".crop img");
+    const img = document.querySelector(".crop .mark");
     img.style.width = `${467 * k}px`;
+    img.style.height = `${467 * k * 352 / 446}px`;
     img.style.left = `${-147 * k}px`;
     img.style.top = `${10 * k}px`;
   </script>
